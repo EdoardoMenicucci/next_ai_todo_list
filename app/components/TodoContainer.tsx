@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Task from "./Task";
 
 type TaskType = {
@@ -9,13 +9,23 @@ type TaskType = {
 };
 
 const TodoContainer: React.FC = () => {
-   const [tasks, setTasks] = useState<TaskType[]>([
-      { task: "Portare a spasso il cane", state: "incompleto" },
-      { task: "Fare la spesa", state: "incompleto" },
-      { task: "Studiare TypeScript", state: "completo" },
-   ]);
 
+   const [tasks, setTasks] = useState<TaskType[]>([
+   ]);
    const [newTask, setNewTask] = useState<string>("");
+
+   // Use Effect Per Local Storage (Interazione esterna)
+   useEffect(() => {
+      const storedTasks = localStorage.getItem("tasks");
+      if (storedTasks) {
+         setTasks(JSON.parse(storedTasks));
+      }
+   }, []);
+
+   // Con [tasks] come secondo argomento, useEffect si attiva ogni volta che tasks cambia
+   useEffect(() => {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+   }, [tasks]);
 
    const addTask = () => {
       if (newTask.trim() !== "") {
@@ -36,6 +46,20 @@ const TodoContainer: React.FC = () => {
       setTasks(updatedTasks);
    };
 
+
+   const deleteTask = (index: number) => {
+        const updatedTasks = tasks.filter((task, i) => i !== index);
+        setTasks(updatedTasks);
+   };
+
+
+   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+         addTask();
+      }
+   };
+
+
    return (
       <div className="container mx-auto">
          <div className="flex justify-center">
@@ -45,7 +69,9 @@ const TodoContainer: React.FC = () => {
                      className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
                      type="text"
                      placeholder="Add Todo"
+                     value={newTask}
                      onChange={(e) => setNewTask(e.target.value)}
+                     onKeyUp={handleKeyPress}
                   />
                   <button
                      className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
@@ -57,14 +83,17 @@ const TodoContainer: React.FC = () => {
                </div>
             </div>
          </div>
+         <div className='container mx-auto w-1/2 mt-5'>
          {/* Ciclo in React */}
          {tasks.map((task, index) => (
             <Task
                key={index}
                task={task}
                toggleTaskState={() => toggleTaskState(index)}
+               deleteTask={() => deleteTask(index)}
             />
          ))}
+         </div>
       </div>
    );
 };
