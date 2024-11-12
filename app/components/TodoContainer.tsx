@@ -16,9 +16,11 @@ const TodoContainer: React.FC = () => {
 
    // Use Effect Per Local Storage (Interazione esterna)
    useEffect(() => {
-      const storedTasks = localStorage.getItem("tasks");
-      if (storedTasks) {
-         setTasks(JSON.parse(storedTasks));
+      if (typeof window !== 'undefined') {
+         const storedTasks = localStorage.getItem("tasks");
+         if (storedTasks) {
+            setTasks(JSON.parse(storedTasks));
+         }
       }
    }, []);
 
@@ -53,7 +55,7 @@ const TodoContainer: React.FC = () => {
    };
 
 
-   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
          addTask();
       }
@@ -71,7 +73,7 @@ const TodoContainer: React.FC = () => {
                      placeholder="Add Todo"
                      value={newTask}
                      onChange={(e) => setNewTask(e.target.value)}
-                     onKeyUp={handleKeyPress}
+                     onKeyUp={handleKeyUp}
                   />
                   <button
                      className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
