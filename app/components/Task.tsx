@@ -5,46 +5,18 @@ type TaskProps = {
       task: string;
       state: string;
    };
-   toggleTaskState: () => void;
-   deleteTask: () => void;
 };
 
 // Si puo' passare una funzione come prop per aggiornare lo stato del componente padre
-const Task: React.FC<TaskProps> = ({ task, toggleTaskState, deleteTask }) => {
+const Task: React.FC<TaskProps> = ({ task }) => {
    return (
-      <div className={`list-item`}>
+      <div className={`list-item m-3`}>
          {/* If in react */}
-         {task.state === "completo" ? (
-            <span className="line-through">
-               {task.task}{" "}
-               <button
-                  className="ml-4 bg-teal-500 hover:bg-teal-700 text-white font-bold rounded px-2"
-                  type="button"
-                  onClick={toggleTaskState}
-               >
-                  X
-               </button>
-            </span>
+         {task.state === "done" ? (
+            <span className="line-through">{task.task} </span>
          ) : (
-            <span>
-               {task.task}
-               <button
-                  className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded px-2"
-                  type="button"
-                  onClick={toggleTaskState}
-               >
-                  X
-               </button>
-            </span>
+            <span>{task.task}</span>
          )}
-         <span>
-         <button
-             className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded px-2"
-             type="button"
-             onClick={deleteTask}>
-               Delete
-         </button>
-         </span>
       </div>
    );
 };
