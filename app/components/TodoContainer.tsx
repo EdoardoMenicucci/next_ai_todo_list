@@ -11,7 +11,6 @@ type TaskType = {
 
 const TodoContainer: React.FC = () => {
    const [tasks, setTasks] = useState<TaskType[]>([]);
-   const [newTask, setNewTask] = useState<string>("");
 
    // Use Effect Per Local Storage (Interazione esterna)
    useEffect(() => {
@@ -27,25 +26,6 @@ const TodoContainer: React.FC = () => {
    useEffect(() => {
       localStorage.setItem("tasks", JSON.stringify(tasks));
    }, [tasks]);
-
-   const addTask = () => {
-      if (newTask.trim() !== "") {
-         setTasks([...tasks, { task: newTask, state: "incompleto" }]);
-         setNewTask("");
-      }
-   };
-
-   const toggleTaskState = (index: number) => {
-      const updatedTasks = tasks.map((task, i) =>
-         i === index
-            ? {
-                 ...task,
-                 state: task.state === "completo" ? "incompleto" : "completo",
-              }
-            : task
-      );
-      setTasks(updatedTasks);
-   };
 
    const deleteTask = (index: number) => {
       const updatedTasks = tasks.filter((task, i) => i !== index);
